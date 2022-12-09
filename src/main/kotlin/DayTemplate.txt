@@ -1,5 +1,5 @@
 private const val FILENAME: String = "day-sample.txt"
-//private const val FILENAME: String = "day-part01.txt"
+//private const val FILENAME: String = "day.txt"
 
 fun main() {
     part01()
