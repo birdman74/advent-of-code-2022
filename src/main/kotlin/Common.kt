@@ -10,5 +10,15 @@ class Common {
 
         fun <E> Iterable<E>.indexesOf(e: E)
                 = mapIndexedNotNull { index, elem -> index.takeIf{elem == e} }
+
+        fun readFileToTwoDIntGrid(fileName: String): List<List<Int>> {
+            val lines = readFile(fileName)
+            var grid: MutableList<List<Int>> = ArrayList<List<Int>>()
+
+            lines.forEach { line ->
+                grid.add(line.map { it.digitToInt() })
+            }
+            return grid
+        }
     }
 }
