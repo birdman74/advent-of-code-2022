@@ -2,7 +2,7 @@
 private const val FILENAME: String = "day11.txt"
 
 val monkeys: MutableList<Monkey> = mutableListOf<Monkey>()
-var magicQuotient: Long = 0
+var magicProduct: Long = 0
 
 fun main() {
     part01()
@@ -36,7 +36,7 @@ private fun executeMonkeyBusiness(rounds: Int) {
     println("Amount of monkey business: ${ topInspectionCounts[0].toLong() * topInspectionCounts[1].toLong() }")
 
     monkeys.clear()
-    magicQuotient = 0
+    magicProduct = 0
 }
 
 private fun parseMonkeySpecs() {
@@ -53,10 +53,10 @@ private fun parseMonkeySpecs() {
             monkeySpec[5].split(" ").last().toInt())
 
         monkeys.add(newMonkey)
-        if (magicQuotient == 0L) {
-            magicQuotient = newMonkey.destinationDivisor.toLong()
+        if (magicProduct == 0L) {
+            magicProduct = newMonkey.destinationDivisor.toLong()
         } else {
-            magicQuotient *= newMonkey.destinationDivisor.toLong()
+            magicProduct *= newMonkey.destinationDivisor.toLong()
         }
     }
 }
@@ -104,8 +104,8 @@ class Monkey(
             }
 
             // Lower concern
-            if (newVal > magicQuotient) {
-                newVal = newVal.mod(magicQuotient)
+            if (newVal > magicProduct) {
+                newVal = newVal.mod(magicProduct)
             }
 
             // Destination eval
