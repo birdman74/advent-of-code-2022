@@ -1,5 +1,3 @@
-import javax.swing.text.StyledEditorKit.BoldAction
-
 //private const val FILENAME: String = "day12-sample.txt"
 private const val FILENAME: String = "day12.txt"
 
@@ -14,19 +12,19 @@ fun main() {
 private fun part01() {
     println("Part 1:\n")
 
-    val destination: Point = walkTheMap('S', 'a', 'E', 'z', ::scaleUpNoMoreThanOne)
+    val destination: Point12 = walkTheMap('S', 'a', 'E', 'z', ::scaleUpNoMoreThanOne)
 
     println("Number of steps to reach destination: ${ minPathMap[destination.x][destination.y] }\n")
 }
 
-fun scaleUpNoMoreThanOne(fromPoint: Point, toPoint: Point) : Boolean {
-    return topMap[toPoint.x][toPoint.y].code <= (topMap[fromPoint.x][fromPoint.y].code + 1)
+private fun scaleUpNoMoreThanOne(fromPoint12: Point12, toPoint12: Point12) : Boolean {
+    return topMap[toPoint12.x][toPoint12.y].code <= (topMap[fromPoint12.x][fromPoint12.y].code + 1)
 }
 
 private fun part02() {
     println("Part 2:\n")
 
-    val destination: Point = walkTheMap('E', 'z', 'S', 'a', ::scaleDownNoMoreThanOne)
+    val destination: Point12 = walkTheMap('E', 'z', 'S', 'a', ::scaleDownNoMoreThanOne)
 
 
     val fastestRoute: Int = topMap.mapIndexed { x, row ->
@@ -42,25 +40,25 @@ private fun part02() {
     println("Fastest route down: $fastestRoute\n")
 }
 
-fun scaleDownNoMoreThanOne(fromPoint: Point, toPoint: Point) : Boolean {
-    return topMap[toPoint.x][toPoint.y].code >= (topMap[fromPoint.x][fromPoint.y].code - 1)
+private fun scaleDownNoMoreThanOne(fromPoint12: Point12, toPoint12: Point12) : Boolean {
+    return topMap[toPoint12.x][toPoint12.y].code >= (topMap[fromPoint12.x][fromPoint12.y].code - 1)
 }
 
 private fun walkTheMap(startMarker: Char, startElevation: Char,
                        endMarker: Char, endElevation: Char,
-                       canMove: (fromPoint: Point, toPoint: Point) -> Boolean) : Point {
+                       canMove: (fromPoint12: Point12, toPoint12: Point12) -> Boolean) : Point12 {
 
-    var origin: Point = Point(-1, -1, 0)
-    var destination: Point = Point(-1, -1, 0)
+    var origin: Point12 = Point12(-1, -1, 0)
+    var destination: Point12 = Point12(-1, -1, 0)
 
     topMap.forEachIndexed { index, s ->
         if (s.contains(startMarker)) {
-            origin = Point(index, s.indexOf(startMarker), 0)
+            origin = Point12(index, s.indexOf(startMarker), 0)
             minPathMap[origin.x][origin.y] = 0
             topMap[index] = topMap[index].replace(startMarker, startElevation)
         }
         if (s.contains(endMarker)) {
-            destination = Point(index, s.indexOf(endMarker), 0)
+            destination = Point12(index, s.indexOf(endMarker), 0)
             topMap[index] = topMap[index].replace(endMarker, endElevation)
         }
     }
@@ -70,10 +68,10 @@ private fun walkTheMap(startMarker: Char, startElevation: Char,
     return destination
 }
 
-class Point (val x: Int, val y: Int, private val stepsToPoint: Int) {
+private class Point12(val x: Int, val y: Int, private val stepsToPoint: Int) {
 
-    fun crawlTo(destination: Point, canMove: (fromPoint: Point, toPoint: Point) -> Boolean) {
-        val possibleSteps = listOf<Point>(left(), above(), right(), below())
+    fun crawlTo(destination: Point12, canMove: (fromPoint12: Point12, toPoint12: Point12) -> Boolean) {
+        val possibleSteps = listOf<Point12>(left(), above(), right(), below())
         val currentPointElev: Int = topMap[x][y].code
         for (point in possibleSteps) {
             if (point.x in 0 until topMap.size && point.y in 0 until topMap[0].length &&
@@ -89,20 +87,20 @@ class Point (val x: Int, val y: Int, private val stepsToPoint: Int) {
 
     }
 
-    private fun above(): Point {
-        return Point(x - 1, y, stepsToPoint + 1)
+    private fun above(): Point12 {
+        return Point12(x - 1, y, stepsToPoint + 1)
     }
 
-    private fun below(): Point {
-        return Point(x + 1, y, stepsToPoint + 1)
+    private fun below(): Point12 {
+        return Point12(x + 1, y, stepsToPoint + 1)
     }
 
-    private fun left(): Point {
-        return Point(x, y - 1, stepsToPoint + 1)
+    private fun left(): Point12 {
+        return Point12(x, y - 1, stepsToPoint + 1)
     }
 
-    private fun right(): Point {
-        return Point(x, y + 1, stepsToPoint + 1)
+    private fun right(): Point12 {
+        return Point12(x, y + 1, stepsToPoint + 1)
     }
 
     override fun toString(): String {
@@ -111,7 +109,7 @@ class Point (val x: Int, val y: Int, private val stepsToPoint: Int) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is Point) return false
+        if (other !is Point12) return false
 
         if (x != other.x) return false
         if (y != other.y) return false

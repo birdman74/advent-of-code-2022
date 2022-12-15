@@ -1,8 +1,8 @@
 //private const val FILENAME: String = "day11-sample.txt"
 private const val FILENAME: String = "day11.txt"
 
-val monkeys: MutableList<Monkey> = mutableListOf<Monkey>()
-var magicProduct: Long = 0
+private val monkeys: MutableList<Monkey> = mutableListOf<Monkey>()
+private var magicProduct: Long = 0
 
 fun main() {
     part01()
@@ -74,7 +74,7 @@ private fun completeRound() {
     4) Monkey throws item based on rule
  */
 
-class Monkey(
+private class Monkey(
     val items: MutableList<Long>,
     private val worryOperation: String,
     private val worryOperand: String,

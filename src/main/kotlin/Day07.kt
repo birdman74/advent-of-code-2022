@@ -70,7 +70,7 @@ private fun createDirList(dir : Dir) : MutableList<Dir> {
     return dirList
 }
 
-class Dir (name: String){
+private class Dir (name: String){
     val dirName: String = name
     var parentDir: Dir? = null
     var dirs: MutableList<Dir> = ArrayList<Dir>()
