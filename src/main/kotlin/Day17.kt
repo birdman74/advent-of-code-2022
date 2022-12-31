@@ -110,10 +110,7 @@ private interface IRockShape {
     fun drop(shaft: MutableList<String>) : Boolean
 }
 
-private open class RockShape(val massLocations: List<List<Int>>,
-                             val width: Int,
-                             val height: Int): IRockShape {
-
+private open class RockShape(val massLocations: List<List<Int>>): IRockShape {
     override var x: Int = Int.MAX_VALUE
     override var y: Int = Int.MAX_VALUE
 
@@ -152,18 +149,18 @@ private open class RockShape(val massLocations: List<List<Int>>,
     }
 }
 
-private class HLine() : RockShape(listOf(listOf(0, 0), listOf(1, 0), listOf(2, 0), listOf(3, 0)), 4, 1) {
+private class HLine() : RockShape(listOf(listOf(0, 0), listOf(1, 0), listOf(2, 0), listOf(3, 0))) {
 }
 
-private class Cross() : RockShape(listOf(listOf(1, 0), listOf(0, 1), listOf(1, 1), listOf(2, 1), listOf(1, 2)), 3 ,3) {
+private class Cross() : RockShape(listOf(listOf(1, 0), listOf(0, 1), listOf(1, 1), listOf(2, 1), listOf(1, 2))) {
 }
 
-private class LShape() : RockShape(listOf(listOf(0, 0), listOf(1, 0), listOf(2, 0), listOf(2, 1), listOf(2, 2)), 3, 3) {
+private class LShape() : RockShape(listOf(listOf(0, 0), listOf(1, 0), listOf(2, 0), listOf(2, 1), listOf(2, 2))) {
 }
 
-private class VLine() : RockShape(listOf(listOf(0, 0), listOf(0, 1), listOf(0, 2), listOf(0, 3)), 1, 4) {
+private class VLine() : RockShape(listOf(listOf(0, 0), listOf(0, 1), listOf(0, 2), listOf(0, 3))) {
 }
 
-private class Box() : RockShape(listOf(listOf(0, 0), listOf(1, 0), listOf(0, 1), listOf(1, 1)), 2, 2) {
+private class Box() : RockShape(listOf(listOf(0, 0), listOf(1, 0), listOf(0, 1), listOf(1, 1))) {
 }
 
