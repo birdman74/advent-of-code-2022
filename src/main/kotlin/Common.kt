@@ -1,8 +1,10 @@
 import java.io.File
+import java.nio.file.Paths
 
 class Common {
     companion object {
         fun readFile(fileName: String): List<String> {
+            println("Working directory: " + Paths.get("").toAbsolutePath().toString())
             val fullFileName = "./input/$fileName"
             println("Input File Name: $fullFileName\n")
             return File(fullFileName).readLines()
@@ -13,7 +15,7 @@ class Common {
 
         fun readFileToTwoDIntGrid(fileName: String): List<List<Int>> {
             val lines = readFile(fileName)
-            var grid: MutableList<List<Int>> = ArrayList<List<Int>>()
+            val grid: MutableList<List<Int>> = ArrayList()
 
             lines.forEach { line ->
                 grid.add(line.map { it.digitToInt() })
