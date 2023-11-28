@@ -18,7 +18,7 @@ private val westStorms: MutableSet<Position> = mutableSetOf()
 private val eastStorms: MutableSet<Position> = mutableSetOf()
 
 private val startPosition = Position(1, 0)
-private var exitPosition = Position(0, 0)
+private var targetPositions: MutableList<Position> = mutableListOf()
 
 fun main() {
     val input = Common.readFile(FILENAME)
@@ -27,7 +27,12 @@ fun main() {
 
     parseMap(input)
 
-    exitPosition = Position(input[0].length - 2, input.size - 1)
+    val exitX = input[0].length - 2
+    val exitY = input.size - 1
+
+    targetPositions.add(Position(exitX, exitY))
+    targetPositions.add(initialPosition)
+    targetPositions.add(Position(exitX, exitY))
 
     val stormPositions: MutableList<MutableSet<Position>> = mutableListOf()
     for (i in 1..(lastSouthY * lastEastX)) {
@@ -40,10 +45,11 @@ fun main() {
         }
     }
 
-    var reachedDestination = false
+    var reachedFinalDestination = false
     var moves = 0
+    var targetPositionIndex = 0
 
-    while(!reachedDestination) {
+    while(!reachedFinalDestination) {
         var newPartyPositions: Set<Position> = setOf()
 
         for (partyPosition in partyPositions) {
@@ -51,14 +57,17 @@ fun main() {
         }
         partyPositions = newPartyPositions.subtract(stormPositions[moves % stormPositions.size])
 
-        if (partyPositions.contains(exitPosition)) {
-            reachedDestination = true
-        }
-
         moves++
-    }
 
-    println("Number of moves: ${moves}\n")
+        if (partyPositions.contains(targetPositions[targetPositionIndex])) {
+            println("Found location #${targetPositionIndex}. Number of moves: ${moves}\n")
+            partyPositions = mutableSetOf(targetPositions[targetPositionIndex])
+            targetPositionIndex++
+            if (targetPositionIndex == targetPositions.size) {
+                reachedFinalDestination = true
+            }
+        }
+    }
 }
 
 private fun parseMap(map: List<String>) {
@@ -120,7 +129,7 @@ private open class Position(var x: Int, var y: Int) {
 
     fun onTheMap(): Boolean {
         return this == startPosition ||
-                this == exitPosition ||
+                this == targetPositions[0] ||
                 (y in lastNorthY..lastSouthY &&
                         x in lastWestX..lastEastX)
     }
