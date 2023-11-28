@@ -1,21 +1,144 @@
-private const val FILENAME: String = "day-sample.txt"
-//private const val FILENAME: String = "day.txt"
+//private const val FILENAME: String = "day24-sample.txt"
+//private const val FILENAME: String = "day24-sample2.txt"
+private const val FILENAME: String = "day24.txt"
+
+private const val NORTH = '^'
+private const val SOUTH = 'v'
+private const val WEST = '<'
+private const val EAST = '>'
+
+private const val lastNorthY = 1
+private const val lastWestX = 1
+private var lastSouthY = 0
+private var lastEastX = 0
+
+private val northStorms: MutableSet<Position> = mutableSetOf()
+private val southStorms: MutableSet<Position> = mutableSetOf()
+private val westStorms: MutableSet<Position> = mutableSetOf()
+private val eastStorms: MutableSet<Position> = mutableSetOf()
+
+private val startPosition = Position(1, 0)
+private var exitPosition = Position(0, 0)
 
 fun main() {
-    part01()
-    part02()
+    val input = Common.readFile(FILENAME)
+    val initialPosition = Position(1, 0)
+    var partyPositions: Set<Position> = mutableSetOf(initialPosition)
+
+    parseMap(input)
+
+    exitPosition = Position(input[0].length - 2, input.size - 1)
+
+    val stormPositions: MutableList<MutableSet<Position>> = mutableListOf()
+    for (i in 1..(lastSouthY * lastEastX)) {
+        moveStorms()
+        val newCoordinates = stormCoordinates()
+        if (!stormPositions.contains(newCoordinates)) {
+            stormPositions.add(stormCoordinates())
+        } else {
+            break
+        }
+    }
+
+    var reachedDestination = false
+    var moves = 0
+
+    while(!reachedDestination) {
+        var newPartyPositions: Set<Position> = setOf()
+
+        for (partyPosition in partyPositions) {
+            newPartyPositions = newPartyPositions.union(partyPosition.possibleMoves())
+        }
+        partyPositions = newPartyPositions.subtract(stormPositions[moves % stormPositions.size])
+
+        if (partyPositions.contains(exitPosition)) {
+            reachedDestination = true
+        }
+
+        moves++
+    }
+
+    println("Number of moves: ${moves}\n")
 }
 
-private fun part01() {
-    println("Part 1:\n")
-    val input = Common.readFile(FILENAME)
+private fun parseMap(map: List<String>) {
+    lastSouthY = map.size - 2
+    lastEastX = map[0].length - 2
 
-    println("\n")
+    for ((y, line) in map.withIndex()) {
+        for ((x, spot) in line.withIndex()) {
+            when(spot) {
+                NORTH -> northStorms.add(Position(x, y))
+                SOUTH -> southStorms.add(Position(x, y))
+                WEST -> westStorms.add(Position(x, y))
+                EAST -> eastStorms.add(Position(x, y))
+                else -> continue
+            }
+        }
+    }
 }
 
-private fun part02() {
-    println("Part 2:\n")
-    val input = Common.readFile(FILENAME)
+private fun moveStorms() {
+    northStorms.forEach { s -> s.y = if (s.y == lastNorthY) { lastSouthY } else { s.y - 1 } }
+    southStorms.forEach { s -> s.y = if (s.y == lastSouthY) { lastNorthY } else { s.y + 1 } }
+    westStorms.forEach { s -> s.x = if (s.x == lastWestX) { lastEastX } else { s.x - 1 } }
+    eastStorms.forEach { s -> s.x = if (s.x == lastEastX) { lastWestX } else { s.x + 1 } }
+}
 
-    println("\n")
+private fun stormCoordinates(): MutableSet<Position> {
+    val coordinateSet = northStorms.union(southStorms).union(westStorms).union(eastStorms)
+    val setClone: MutableSet<Position> = mutableSetOf()
+    for (pos in coordinateSet) {
+        setClone.add(Position(pos.x, pos.y))
+    }
+    return setClone
+}
+
+private open class Position(var x: Int, var y: Int) {
+    fun possibleMoves(): Set<Position> {
+        val possibleMoves: MutableSet<Position> = mutableSetOf()
+        possibleMoves.add(this)
+        var newPos = Position(x - 1, y)
+        if (newPos.onTheMap()) {
+            possibleMoves.add(newPos)
+        }
+        newPos = Position(x + 1, y)
+        if (newPos.onTheMap()) {
+            possibleMoves.add(newPos)
+        }
+        newPos = Position(x, y - 1)
+        if (newPos.onTheMap()) {
+            possibleMoves.add(newPos)
+        }
+        newPos = Position(x, y + 1)
+        if (newPos.onTheMap()) {
+            possibleMoves.add(newPos)
+        }
+
+        return possibleMoves.toSet()
+    }
+
+    fun onTheMap(): Boolean {
+        return this == startPosition ||
+                this == exitPosition ||
+                (y in lastNorthY..lastSouthY &&
+                        x in lastWestX..lastEastX)
+    }
+
+    override fun toString(): String {
+        return "($x, $y)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Position) return false
+
+        return (x == other.x) && (y == other.y)
+    }
+
+    override fun hashCode(): Int {
+        var result = x.hashCode()
+        result = 31 * result + y.hashCode()
+        return result
+    }
 }
